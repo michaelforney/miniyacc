@@ -1,4 +1,4 @@
-/*% clang -g -std=c99 -Wall -Wextra % -o #
+/*% clang -g -Wall -Wextra % -o #
  * miniyacc - LALR(1) grammars for C
  * See LICENSE for copyright and license details.
  */
