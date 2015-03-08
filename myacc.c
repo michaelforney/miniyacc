@@ -30,7 +30,7 @@ enum {
 	MaxTm = 1000,
 
 	TSetSz = (MaxTk+31)/32,
-	Sym0 = MaxTk,
+	Sym0 = MaxTk
 };
 
 struct Rule {
@@ -53,7 +53,7 @@ struct Info {
 		ANone,
 		ALeft,
 		ARight,
-		ANonassoc,
+		ANonassoc
 	} assoc;
 	char name[IdntSz];
 	char type[IdntSz];
@@ -767,7 +767,7 @@ enum {
 	TNonassoc,
 	TPrec,
 	TStart,
-	TEof,
+	TEof
 };
 
 struct {
