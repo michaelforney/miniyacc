@@ -1214,27 +1214,29 @@ void
 init(int ac, char *av[])
 {
 	int c, vf, df;
-	char *pref, buf[100];
+	char *pref, buf[100], *opt;
 
 	(void) ac;
 	pref = "y";
 	vf = df = 0;
-	for (av++; av[0] && av[0][0]=='-' && (c=av[0][1]); av++)
-		switch (c) {
-		case 'v':
-			vf = 1;
-			break;
-		case 'd':
-			df = 1;
-			break;
-		case 'b':
-			if ((pref = *++av))
+	for (av++; av[0] && av[0][0]=='-'; av++)
+		for (opt = &av[0][1]; (c = *opt); opt++)
+			switch (c) {
+			case 'v':
+				vf = 1;
 				break;
-		default:
-		usage:
-			fputs("usage: myacc [-vd] [-b file_prefix] grammar\n", stderr);
-			exit(1);
-		}
+			case 'd':
+				df = 1;
+				break;
+			case 'b':
+				if ((pref = *++av))
+					break;
+			default:
+			usage:
+				fputs("usage: myacc [-vd] [-b file_prefix] grammar\n", stderr);
+				exit(1);
+			}
+
 	if (!(srca = *av))
 		goto usage;
 	fin = fopen(srca, "r");
