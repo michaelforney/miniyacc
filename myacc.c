@@ -692,9 +692,12 @@ tblout()
 	}
 	aout("yytrns", o, m);
 	if (fhdr) {
-		fprintf(fhdr, "int yyparse(void);\n");
-		fprintf(fhdr, "extern YYSTYPE yylval;\n");
-		fprintf(fhdr, "#endif\n");
+		fputs("int yyparse(void);\n", fhdr);
+		fputs("#ifndef YYSTYPE\n", fhdr);
+		fputs("#define YYSTYPE int\n", fhdr);
+		fputs("#endif\n", fhdr);
+		fputs("extern YYSTYPE yylval;\n", fhdr);
+		fputs("#endif\n", fhdr);
 	}
 	free(o);
 }
