@@ -957,10 +957,10 @@ getdecls()
 			die("syntax error, { expected after %union");
 		fprintf(fout, "#line %d \"%s\"\n", lineno, srca);
 		s = cpycode();
-		fprintf(fout, "union yyunion %s;\n", s);
+		fprintf(fout, "typedef union %s yyunion;\n", s);
 		fprintf(fout, "#define YYSTYPE yyunion\n");
 		if (fhdr) {
-			fprintf(fhdr, "union yyunion %s;\n", s);
+			fprintf(fhdr, "typedef union %s yyunion;\n", s);
 			fprintf(fhdr, "#define YYSTYPE yyunion\n");
 		}
 		free(s);
