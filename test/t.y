@@ -4,7 +4,7 @@
 	#include <stdlib.h>
 	#include <string.h>
 
-	int lex(void);
+	int yylex(void);
 %}
 
 %union {
