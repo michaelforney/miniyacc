@@ -837,6 +837,8 @@ nexttk()
 			die("identifier too long");
 		c = fgetc(fin);
 	}
+	if (p == idnt)
+		die("unknown token");
 	*p = 0;
 	if (strcmp(idnt, "%")==0)
 	if (c=='{')
