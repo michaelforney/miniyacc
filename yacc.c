@@ -800,8 +800,8 @@ istok(int c)
 int
 nexttk()
 {
-	int n;
-	char c, prev, *p;
+	int n, c, prev;
+	char *p;
 
 	for (;;) {
 		while (isspace(c=fgetc(fin)))
