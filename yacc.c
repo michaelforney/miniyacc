@@ -801,11 +801,23 @@ int
 nexttk()
 {
 	int n;
-	char c, *p;
+	char c, prev, *p;
 
-	while (isspace(c=fgetc(fin)))
-		if (c == '\n')
-			lineno++;
+	for (;;) {
+		while (isspace(c=fgetc(fin)))
+			if (c == '\n')
+				lineno++;
+		/* handle comments */
+		if (c != '/' || (c=fgetc(fin)) != '*')
+			break;
+		c = fgetc(fin);
+		do {
+			if (c == EOF)
+				die("EOF in comment");
+			prev = c;
+			c = fgetc(fin);
+		} while (prev != '*' || c != '/');
+	}
 	switch (c) {
 	case '<':
 		return TLangle;
