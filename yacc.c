@@ -368,7 +368,7 @@ stadd(Item **pi)
 		i->gtbl = yalloc(nsy, sizeof i->gtbl[0]);
 		i->dirty = 1;
 		i1 = yalloc(1, sizeof *i1);
-		*i1 = *i;
+		memcpy(i1, i, sizeof *i1);
 		*pi = st[hi] = i1;
 		return 1;
 	}
