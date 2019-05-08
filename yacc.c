@@ -1075,7 +1075,7 @@ getdecls()
 void
 getgram()
 {
-	extern char *retcode;
+	extern const char retcode[];
 	int tk;
 	Sym hd, *p, s;
 	Rule *r;
@@ -1090,7 +1090,7 @@ getgram()
 			r->rhs[0] = sstart;
 			r->rhs[1] = 0;
 			r->rhs[2] = S;
-			r->act = retcode;
+			r->act = (char *)retcode;
 			qsort(rs, nrl, sizeof rs[0], rcmp);
 			return;
 		}
@@ -1219,13 +1219,11 @@ actout(Rule *r)
 void
 codeout()
 {
-	extern char *code0[], *code1[];
-	char **p;
+	extern const char code0[], code1[];
 	Rule *r;
 	int n, c;
 
-	for (p=code0; *p; p++)
-		fputs(*p, fout);
+	fputs(code0, fout);
 	for (n=0; n<nrl; n++) {
 		fprintf(fout, "\tcase %d:\n", n);
 		r = &rs[n];
@@ -1233,8 +1231,7 @@ codeout()
 		actout(r);
 		fputs("\t\tbreak;\n", fout);
 	}
-	for (p=code1; *p; p++)
-		fputs(*p, fout);
+	fputs(code1, fout);
 	fprintf(fout, "#line %d \"%s\"\n", lineno, srca);
 	while ((c=fgetc(fin))!=EOF)
 		fputc(c, fout);
@@ -1317,76 +1314,74 @@ main(int ac, char *av[])
 	|sed 's|.*|"&\\n",|'
 */
 
-char *retcode = "\t\tyyval = ps[1].val; return 0;";
+const char retcode[] = "\t\tyyval = ps[1].val; return 0;";
 
-char *code0[] = {
-"\n",
-"#ifndef YYSTYPE\n",
-"#define YYSTYPE int\n",
-"#endif\n",
-"YYSTYPE yylval;\n",
-"\n",
-"int\n",
-"yyparse()\n",
-"{\n",
-"	enum {\n",
-"		StackSize = 100,\n",
-"		ActSz = sizeof yyact / sizeof yyact[0],\n",
-"	};\n",
-"	struct {\n",
-"		YYSTYPE val;\n",
-"		int state;\n",
-"	} stk[StackSize], *ps;\n",
-"	int r, h, n, s, tk;\n",
-"	YYSTYPE yyval;\n",
-"\n",
-"	ps = stk;\n",
-"	ps->state = s = yyini;\n",
-"	tk = -1;\n",
-"loop:\n",
-"	n = yyadsp[s];\n",
-"	if (tk < 0 && n > -yyntoks)\n",
-"		tk = yytrns[yylex()];\n",
-"	n += tk;\n",
-"	if (n < 0 || n >= ActSz || yychk[n] != tk) {\n",
-"		r = yyadef[s];\n",
-"		if (r < 0)\n",
-"			return -1;\n",
-"		goto reduce;\n",
-"	}\n",
-"	n = yyact[n];\n",
-"	if (n == -1)\n",
-"		return -1;\n",
-"	if (n < 0) {\n",
-"		r = - (n+2);\n",
-"		goto reduce;\n",
-"	}\n",
-"	tk = -1;\n",
-"	yyval = yylval;\n",
-"stack:\n",
-"	ps++;\n",
-"	if (ps-stk >= StackSize)\n",
-"		return -2;\n",
-"	s = n;\n",
-"	ps->state = s;\n",
-"	ps->val = yyval;\n",
-"	goto loop;\n",
-"reduce:\n",
-"	ps -= yyr1[r];\n",
-"	h = yyr2[r];\n",
-"	s = ps->state;\n",
-"	n = yygdsp[h] + s;\n",
-"	if (n < 0 || n >= ActSz || yychk[n] != yyntoks+h)\n",
-"		n = yygdef[h];\n",
-"	else\n",
-"		n = yyact[n];\n",
-"	switch (r) {\n",
-0
-};
+const char code0[] =
+"\n"
+"#ifndef YYSTYPE\n"
+"#define YYSTYPE int\n"
+"#endif\n"
+"YYSTYPE yylval;\n"
+"\n"
+"int\n"
+"yyparse()\n"
+"{\n"
+"	enum {\n"
+"		StackSize = 100,\n"
+"		ActSz = sizeof yyact / sizeof yyact[0],\n"
+"	};\n"
+"	struct {\n"
+"		YYSTYPE val;\n"
+"		int state;\n"
+"	} stk[StackSize], *ps;\n"
+"	int r, h, n, s, tk;\n"
+"	YYSTYPE yyval;\n"
+"\n"
+"	ps = stk;\n"
+"	ps->state = s = yyini;\n"
+"	tk = -1;\n"
+"loop:\n"
+"	n = yyadsp[s];\n"
+"	if (tk < 0 && n > -yyntoks)\n"
+"		tk = yytrns[yylex()];\n"
+"	n += tk;\n"
+"	if (n < 0 || n >= ActSz || yychk[n] != tk) {\n"
+"		r = yyadef[s];\n"
+"		if (r < 0)\n"
+"			return -1;\n"
+"		goto reduce;\n"
+"	}\n"
+"	n = yyact[n];\n"
+"	if (n == -1)\n"
+"		return -1;\n"
+"	if (n < 0) {\n"
+"		r = - (n+2);\n"
+"		goto reduce;\n"
+"	}\n"
+"	tk = -1;\n"
+"	yyval = yylval;\n"
+"stack:\n"
+"	ps++;\n"
+"	if (ps-stk >= StackSize)\n"
+"		return -2;\n"
+"	s = n;\n"
+"	ps->state = s;\n"
+"	ps->val = yyval;\n"
+"	goto loop;\n"
+"reduce:\n"
+"	ps -= yyr1[r];\n"
+"	h = yyr2[r];\n"
+"	s = ps->state;\n"
+"	n = yygdsp[h] + s;\n"
+"	if (n < 0 || n >= ActSz || yychk[n] != yyntoks+h)\n"
+"		n = yygdef[h];\n"
+"	else\n"
+"		n = yyact[n];\n"
+"	switch (r) {\n"
+;
 
-char *code1[] = {
-"	}\n",
-"	goto stack;\n",
-"}\n",
-0
-};
+const char code1[] =
+"	}\n"
+"	goto stack;\n"
+"}\n"
+;
